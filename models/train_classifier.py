@@ -119,7 +119,7 @@ def evaluate_model(model, X_test, Y_test, category_names):
         print(classification_report(Y_test[cat], Y_pred_df[cat]))
 
     # Print overall accuracy
-    print("Overall accuracy; {}".format((Y_pred_df == Y_test).mean().mean()))
+    # print("Overall accuracy; {}".format((Y_pred_df == Y_test).mean().mean()))
 
 
 def save_model(model, model_filepath):
@@ -133,7 +133,7 @@ def save_model(model, model_filepath):
     Return: none, model saved
     '''
 
-    pickle.dump(model, open(filename, 'wb'))
+    pickle.dump(model, open(model_filepath, 'wb'))
 
 
 def main():
