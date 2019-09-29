@@ -26,7 +26,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
-from sklearn.grid_search import GridSearchCV
 
 def load_data(database_filepath):
     '''
