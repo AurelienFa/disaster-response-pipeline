@@ -26,6 +26,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+from sklearn.base import BaseEstimator, TransformerMixin
 
 def load_data(database_filepath):
     '''
@@ -83,6 +84,27 @@ def tokenize(text):
     tokens = [lemmatizer.lemmatize(word) for word in tokens if word not in stopwords.words('english')]
 
     return tokens
+
+class TextLengthExtractor(BaseEstimator, TransformerMixin):
+    '''
+    Create a transformer to enrich the machine learning model
+
+    This transformer extracts the length of the text message
+
+    No input and output, just functions inside the class
+    '''
+
+    def fit(self, X, y = None):
+        '''
+        No need to fit as this is only a transformer
+        '''
+        return self
+
+    def transform(self, X):
+        '''
+        Transform function to extract the length of the text
+        '''
+        return pd.DataFrame(pd.Series(X).apply(lambda x: len(x)))
 
 
 def build_model():
