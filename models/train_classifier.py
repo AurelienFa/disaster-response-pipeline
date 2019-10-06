@@ -106,6 +106,49 @@ class TextLengthExtractor(BaseEstimator, TransformerMixin):
         '''
         return pd.DataFrame(pd.Series(X).apply(lambda x: len(x)))
 
+class StartingVerbExtractor(BaseEstimator, TransformerMixin):
+    '''
+    Create a transformer to enrich the machine learning model
+
+    This transformer extracts if starting verb of the text message
+
+    No input and output, just functions inside the class
+    '''
+
+    def starting_verb(self, text):
+        '''
+        Define function for the transform method
+
+        Arg: Text
+
+        Return: true if text starts with a verb, otherwise false
+        '''
+
+        sentence_list = nltk.sent_tokenize(text)
+
+        for sentence in sentence_list:
+            pos_tags = nltk.pos_tag(tokenize(sentence))
+            first_word, first_tag = pos_tags[0]
+            if first_tag in ['VB', 'VBP'] or first_word == 'RT':
+                return True
+
+        return False
+
+    def fit(self, x, y=None):
+        '''
+        No need to fit as this is only a transformer
+        '''
+
+        return self
+
+    def transform(self, X):
+        '''
+        Transform method to run the starting_verb function
+        '''
+
+        X_tagged = pd.Series(X).apply(self.starting_verb)
+
+        return pd.DataFrame(X_tagged)
 
 def build_model():
     '''
