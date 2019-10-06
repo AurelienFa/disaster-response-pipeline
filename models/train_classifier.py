@@ -61,13 +61,24 @@ def tokenize(text):
     Return: tokenized text
     '''
 
-    # Normalize case and remove punctuation
+    # Find ulr in text and replace with a urlplaceholder
+    ## Define form of url
+    url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+
+    ## find all urls in text
+    detected_urls = re.findall(url_regex, text)
+
+    ## replace url with urlplaceholder
+    for url in detected_urls:
+        text = text.replace(url, "urlplaceholder")
+
+    # normalize case and remove punctuation
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
 
     # tokenize text
     tokens = word_tokenize(text)
 
-    # lemmatize and remove stop words
+    # lemmatize andremove stop words
     lemmatizer = WordNetLemmatizer()
     tokens = [lemmatizer.lemmatize(word) for word in tokens if word not in stopwords.words('english')]
 
