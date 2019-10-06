@@ -163,11 +163,24 @@ def build_model():
     ada = AdaBoostClassifier()
 
     # Build a pipeline
+    # using feature union, adding some more features into the model
     model = Pipeline([
-        ('vect', CountVectorizer(tokenizer = tokenize)),
-        ('tfidf', TfidfTransformer()),
+        ('features', FeatureUnion([
+
+            ('nlp_pipeline', Pipeline([
+                ('vect', CountVectorizer(tokenizer = tokenize,
+                        max_features = 10000, ngram_range = (1, 1),
+                        max_df = 0.5),
+                ('tfidf', TfidfTransformer())
+                ])),
+
+            ('starting_verb', StartingVerbExtractor()),
+
+            ('text_length', TextLengthExtractor())
+                ])),
+
         ('clf', MultiOutputClassifier(ada))
-        ])
+                ])
 
     return model
 
