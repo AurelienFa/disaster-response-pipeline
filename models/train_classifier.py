@@ -17,12 +17,13 @@ from nltk.tokenize import word_tokenize
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
+nltk.download('averaged_perceptron_tagger')
 
 # ML packages
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.multioutput import MultiOutputClassifier
-from sklearn.pipeline import Pipeline
+from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
@@ -74,16 +75,19 @@ def tokenize(text):
         text = text.replace(url, "urlplaceholder")
 
     # normalize case and remove punctuation
-    text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
+    # text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
 
     # tokenize text
     tokens = word_tokenize(text)
 
-    # lemmatize andremove stop words
+    # lemmatize and remove stop words
     lemmatizer = WordNetLemmatizer()
-    tokens = [lemmatizer.lemmatize(word) for word in tokens if word not in stopwords.words('english')]
+    clean_tokens = []
+    for tok in tokens:
+        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
+        clean_tokens.append(clean_tok)
 
-    return tokens
+    return clean_tokens
 
 class TextLengthExtractor(BaseEstimator, TransformerMixin):
     '''
@@ -170,7 +174,7 @@ def build_model():
             ('nlp_pipeline', Pipeline([
                 ('vect', CountVectorizer(tokenizer = tokenize,
                         max_features = 10000, ngram_range = (1, 1),
-                        max_df = 0.5),
+                        max_df = 0.5)),
                 ('tfidf', TfidfTransformer())
                 ])),
 
