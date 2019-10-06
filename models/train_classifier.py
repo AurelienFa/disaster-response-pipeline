@@ -41,7 +41,7 @@ def load_data(database_filepath):
     engine = create_engine('sqlite:///'+ database_filepath)
 
     # load db into dataframe df
-    df = pd.read_sql_table('df', con = engine)
+    df = pd.read_sql_table('table', con = engine)
 
     # Extract X, Y and category_names from dataframe
     X = df['message']
