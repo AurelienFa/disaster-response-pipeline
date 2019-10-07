@@ -87,11 +87,19 @@ def build_model():
     ada = AdaBoostClassifier()
 
     # Build a pipeline
-    model = Pipeline([
+    pipeline_model = Pipeline([
         ('vect', CountVectorizer(tokenizer = tokenize)),
         ('tfidf', TfidfTransformer()),
         ('clf', MultiOutputClassifier(ada))
         ])
+
+    parameters = {
+        'features__nlp_pipeline__vect__ngram_range': ((1, 1), (1, 2)),
+        'features__nlp_pipeline__vect__max_df': (0.25, 0.5),
+        'features__nlp_pipeline__vect__max_features': (5000, 10000),
+    }
+
+    model = GridSearchCV(pipeline_model, param_grid=parameters)
 
     return model
 
