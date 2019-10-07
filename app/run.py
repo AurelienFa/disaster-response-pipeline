@@ -8,6 +8,7 @@ from nltk.tokenize import word_tokenize
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
+from plotly.graph_objects import Pie
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
@@ -43,25 +44,40 @@ def index():
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
 
+    label_sums = df.iloc[:, 4:].sum().sort_values(ascending = False)
+    label_names = list(label_sums.index)
+
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
+                Pie(
+                    labels=genre_names,
+                    values=genre_counts
+                )
+            ],
+            'layout': {
+            'title': 'Distribution of genres in training set'
+            }
+        },
+
+        {
+            'data': [
                 Bar(
-                    x=genre_names,
-                    y=genre_counts
+                    x=label_names,
+                    y=label_sums,
                 )
             ],
 
             'layout': {
-                'title': 'Distribution of Message Genres',
+                'title': 'Distribution of labels/categories',
                 'yaxis': {
                     'title': "Count"
                 },
                 'xaxis': {
-                    'title': "Genre"
-                }
+
+                },
             }
         }
     ]
