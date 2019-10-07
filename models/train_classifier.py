@@ -26,6 +26,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+from sklearn.model_selection import GridSearchCV
 
 def load_data(database_filepath):
     '''
@@ -94,12 +95,13 @@ def build_model():
         ])
 
     parameters = {
-        'features__nlp_pipeline__vect__ngram_range': ((1, 1), (1, 2)),
-        'features__nlp_pipeline__vect__max_df': (0.25, 0.5),
-        'features__nlp_pipeline__vect__max_features': (5000, 10000),
+        'vect__ngram_range': ((1, 1), (1, 2)),
+        'vect__max_df': (0.25, 0.5),
+        'vect__max_features': (5000, 10000),
     }
 
-    model = GridSearchCV(pipeline_model, param_grid=parameters)
+    model = GridSearchCV(pipeline_model, param_grid=parameters,
+        cv = 3, verbose = 10)
 
     return model
 
